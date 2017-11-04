@@ -1,0 +1,70 @@
+[pycardmaker]
+v=1
+type=Game
+[meta]
+name=1000 Bornes
+lang=fr
+
+[types]
+attaque=Carte attaque
+parade=Carte parade
+botte=Carte botte secrète
+distance=Carte distance
+
+[type_attaque]
+accident=3
+panne_essence=3
+creve=3
+limite=4
+feu_rouge=5
+; TOTAL: 18
+
+[type_parade]
+reparation=6
+essence=6
+roue_secours=6
+fin_limite=6
+feu_vert=14
+; TOTAL: 38
+
+[type_botte]
+as_du_volent=1
+citerne=1
+increvable=1
+prioritaire=1
+; TOTAL: 4
+
+[type_distance]
+25km=10
+50km=10
+75km=10
+100km=12
+200km=4
+; TOTAL: 38
+
+; ALL CARDS: 106
+
+[card_names]
+accident=Accident
+panne_essence=Panne d'essence
+creve=Crevé
+limite=Limite de vitesse
+feu_rouge=Feu rouge
+reparation=Réparations
+essence=Station essence
+roue_secours=Roue de secours
+fin_limite=Fin de limite de vitesse
+feu_vert=Feu vert
+as_du_volent=As du volent
+citerne=Citerne d'essence
+increvable=Increvable
+prioritaire=Prioritaire
+25km=25 KM
+50km=50 KM
+75km=75 KM
+100km=100 KM
+200km=200 KM
+
+[back]
+*=#0000ff
+

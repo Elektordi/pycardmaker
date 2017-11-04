@@ -1,0 +1,13 @@
+[pycardmaker]
+v=1
+type=Size
+[meta]
+name=Bridge sized card
+source=http://www.makeplayingcards.com
+
+[size]
+dpi=300
+safesize=603x978
+cutsize=675x1050
+bleedsize=747x1122
+duplex=yes
