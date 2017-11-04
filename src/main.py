@@ -58,6 +58,8 @@ def main():
             print("\t%s : %s"%(c, commandlist[c]))
         return
 
+    config.ConfigManager.setConfigDir(options.configdir)
+
     if options.command == 'config':
         command_config(options)
         return
@@ -70,20 +72,20 @@ def main():
     return
 
 def command_config(options):
-    list = config.ConfigManager.getGames(options.configdir)
+    list = config.ConfigManager.getGames()
     print("Games:")
     for i in sorted(list):
         print("\t%s : %s"%(i, list[i]))
     print()
     
-    list = config.ConfigManager.getSizes(options.configdir)
+    list = config.ConfigManager.getSizes()
     print("Sizes:")
     for i in sorted(list):
         print("\t%s : %s"%(i, list[i]))
     print()
             
 def command_new(options):
-    projects.ProjectsManager.new(options.project, options.projdir, options.configdir)
+    projects.ProjectsManager.new(options.project, options.projdir)
 
 def command_build(options):
     print("TODO")
@@ -96,7 +98,7 @@ def command_safecheck(options):
 
 def command_check(options):
     p = projects.Project(options.project, options.projdir)
-    p.generateMissingAssets()
+    p.check()
 
 
 

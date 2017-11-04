@@ -1,1 +1,5 @@
 TODO
+
+sudo apt-get install python3-pip libboost-python-dev libgraphicsmagick++1-dev
+sudo pip3 install --upgrade pip
+sudo pip3 -r requirements.txt

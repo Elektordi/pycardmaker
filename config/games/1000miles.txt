@@ -65,6 +65,9 @@ prioritaire=Prioritaire
 100km=100 KM
 200km=200 KM
 
-[back]
-*=#0000ff
+[backs]
+all=Verso
+
+[types_back]
+*=all
 

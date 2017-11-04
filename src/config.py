@@ -7,28 +7,36 @@ log = logging.getLogger("pycardmaker")
 from pathlib import Path
 from configparser import ConfigParser
 
+from . import imgtools
+
 
 class ConfigManager:
-    def getGames(configdir):
-        return ConfigManager._getList(configdir, Game)
+    def setConfigDir(configdir):
+        ConfigManager.configdir = configdir
+
+    def getGames():
+        return ConfigManager._getList(Game)
     
-    def getSizes(configdir):
-        return ConfigManager._getList(configdir, Size)
+    def getSizes():
+        return ConfigManager._getList(Size)
         
-    def getGame(configdir, name):
-        return ConfigManager._getOne(configdir, Game, name)
+    def getGame(name):
+        return ConfigManager._getOne(Game, name)
     
-    def getSize(configdir, name):
-        return ConfigManager._getOne(configdir, Size, name)
+    def getSize(name):
+        return ConfigManager._getOne(Size, name)
         
-    def _getList(configdir, t):
-        p = Path("%s/%s"%(configdir, t.dirname()))
+    def _getList(t):
+        p = Path("%s/%s"%(ConfigManager.configdir, t.dirname()))
         list = [x for x in p.iterdir() if x.is_file() and x.suffix=='.txt']
         list = [t(x.stem, x.open()) for x in list]
         return dict([(x.code, x) for x in list])
         
-    def _getOne(configdir, t, name):
-        return [name]
+    def _getOne(t, name):
+        p = Path("%s/%s/%s.txt"%(ConfigManager.configdir, t.dirname(), name))
+        if not p.is_file():
+            return None
+        return t(p.stem, p.open())
     
     
 class Generic(object):
@@ -42,28 +50,23 @@ class Generic(object):
         cp.read_file(configfile)
         try:
             if int(cp['pycardmaker']['v']) > 1:
-                log.error("Invalid file %s: Unknow config version %s"%(configfile.name, cp['pycardmaker']['v']))
-                return
+                raise InvalidConfig("Invalid file %s: Unknow config version %s"%(configfile.name, cp['pycardmaker']['v']))
                 
             cname = self.__class__.__name__
             if cp['pycardmaker']['type'] != cname:
-                log.error("Invalid file %s: Invalid config type %s instead of %s"
+                raise InvalidConfig("Invalid file %s: Invalid config type %s instead of %s"
                             %(configfile.name, cp['pycardmaker']['type'], cname))
-                return
                 
             if not 'meta' in cp:
-                log.error("Invalid file %s: Missing meta section"%(configfile.name))
-                return
+                raise InvalidConfig("Invalid file %s: Missing meta section"%(configfile.name))
                 
             if not 'name' in cp['meta'] or not cp['meta']['name']:
-                log.error("Invalid file %s: Missing meta name"%(configfile.name))
-                return
+                raise InvalidConfig("Invalid file %s: Missing meta name"%(configfile.name))
                 
             self.config = cp
             
         except KeyError as e:
-            log.error("Invalid file %s: %s"%(configfile.name, e))
-            return
+            raise InvalidConfig("Invalid file %s: %s"%(configfile.name, e))
 
     def __str__(self):
         if 'source' in self.config['meta']:
@@ -76,11 +79,25 @@ class Generic(object):
     
 class Game(Generic):
     def dirname():
-        return 'games'          
+        return 'games'     
+        
+    def getCards(self):
+        # HACK
+        return [str(x) for x in self.config['card_names']]
+        
+    def getBacks(self):
+        # HACK
+        return [str(x) for x in self.config['backs']]
 
 class Size(Generic):
     def dirname():
         return 'sizes'
         
-
+    def createPlaceholder(self, file):
+        wh = self.config['size']['bleedsize'].split('x')
+        i = imgtools.MyImage(wh[0], wh[1])
+        i.save(file)
         
+
+class InvalidConfig(Exception):
+    pass
