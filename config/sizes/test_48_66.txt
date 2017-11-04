@@ -6,7 +6,7 @@ name=Test 48x66
 
 [size]
 dpi=300
-safesize=45x63
-cutsize=47x65
+safesize=44x62
+cutsize=46x64
 bleedsize=48x66
 duplex=yes

@@ -14,7 +14,7 @@ class CardsManager:
 
     def getTypesFromProject(p):
         a = []
-        cp = p.getMergedGameConf()
+        cp = p.merged
         for tref in cp['types']:
             t = Type(p, tref, cp['types'][tref])
             a.append(t)
@@ -22,11 +22,11 @@ class CardsManager:
 
     def getCardsFromProject(p):
         a = []
-        cp = p.getMergedGameConf()
+        cp = p.merged
         for tref in cp['types']:
-            t = Type(p, tref, cp['types'][tref])
+            t = Type(p, tref)
             for cref in cp['type_%s'%(tref)]:
-                c = Card(p, cref, t, cp['card_names'][cref], cp['type_%s'%(tref)][cref])
+                c = Card(p, t, cref)
                 a.append(c)
         return a
 
@@ -58,12 +58,12 @@ class CardsManager:
 
 class Card:
     
-    def __init__(self, project, ref, type, name, count=1):
+    def __init__(self, project, type, ref):
         self.project = project
-        self.ref = ref
         self.type = type
-        self.name = name
-        self.count = int(count)
+        self.ref = ref
+        self.name = project.merged['card_names'][ref]
+        self.count = int(project.merged['type_%s'%(type.ref)][ref])
         
     def paintFront(self, i):
         return self.paint(i, 'front')
@@ -82,8 +82,11 @@ class Card:
     
 class Type:
 
-    def __init__(self, project, ref, name):
+    def __init__(self, project, ref):
         self.project = project
         self.ref = ref
-        self.name = name
-        self.back = 'all' # TODO
+        self.name = project.merged['types'][ref]
+        if ref in project.merged['backs']:
+            self.back = project.merged['types_back'][ref]
+        else:
+            self.back = project.merged['types_back']['*']

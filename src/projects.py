@@ -117,22 +117,22 @@ class Project:
                     
             self.config = cp
             
+            
+            cp = ConfigParser()
+            for c in [self.game.config, self.config]:
+                io = StringIO()
+                c.write(io)
+                io.seek(0)
+                cp.read_file(io)
+                io.close()
+            self.merged = cp
+            
                         
         except KeyError as e:
             raise InvalidProject("Invalid file %s: %s"%(name, e))
         
     def check(self):
         print("TODO CHECK")
-        
-    def getMergedGameConf(self):
-        cp = ConfigParser()
-        for c in [self.game.config, self.config]:
-            io = StringIO()
-            c.write(io)
-            io.seek(0)
-            cp.read_file(io)
-            io.close()
-        return cp
 
 
 
