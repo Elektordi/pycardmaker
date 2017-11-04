@@ -1,0 +1,12 @@
+[pycardmaker]
+v=1
+type=Size
+[meta]
+name=Test 48x66
+
+[size]
+dpi=300
+safesize=45x63
+cutsize=47x65
+bleedsize=48x66
+duplex=yes

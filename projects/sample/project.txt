@@ -1,0 +1,38 @@
+[pycardmaker]
+v = 1
+type = Project
+
+[meta]
+name = Sample game (1000 Bornes)
+copyright = Card design from Wikipedia (John Reid)
+
+[base]
+size = test_48_66
+game = 1000miles
+
+[layers_front]
+0 = background.png
+1 = cards/{card}.png
+2 = overlay.png
+
+[layers_back]
+0 = back.png
+1 = back_{back}.png
+
+
+# Adding rules card
+
+[types]
+regles = Règles
+
+[type_regles]
+regles = 2
+
+[card_names]
+regles = Règles
+
+[backs]
+regles = Règles
+
+[types_back]
+regles = regles
