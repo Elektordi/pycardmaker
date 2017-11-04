@@ -6,9 +6,9 @@ import shutil
 
 from . import imgtools
 
-MODE_EXT = 1
-MODE_CUT = 2
-MODE_SAFECHECK = 3
+MODE_EXT = 1 # Full extend
+MODE_CUT = 2 # White outside cut zone
+MODE_SAFECHECK = 3 # Full with lines for cut (black) and safe (red)
 
 class CardsManager:
 
@@ -35,8 +35,9 @@ class CardsManager:
         if path.exists():
             print('Deleting existing out dir: %s'%(path))
             shutil.rmtree(str(path))
-        path.mkdir()
+        path.mkdir(0o777, True)
         
+        print("Generating cards...")
         cards = CardsManager.getCardsFromProject(p)
         n = 0
         for c in cards:
@@ -44,6 +45,8 @@ class CardsManager:
             bi = p.size.newImage()
             c.paintFront(fi)
             c.paintBack(bi)
+            c.applyMode(fi, mode)
+            c.applyMode(bi, mode)
             if dedup:
                 fi.save(path/('%s-%s-F-x%d.png'%(c.type.ref, c.ref, c.count)))
                 bi.save(path/('%s-%s-B-x%d.png'%(c.type.ref, c.ref, c.count)))
@@ -79,6 +82,25 @@ class Card:
             l = self.project.config[cat][id]
             l = l.format(card=self.ref, type=self.type.ref, back=self.type.back)
             i.merge(self.project.dir/l)
+            
+    def applyMode(self, i, mode):
+        if mode==MODE_EXT:
+            pass
+            
+        elif mode==MODE_CUT:
+            # TODO
+            cut = self.project.size.getCutWH()
+            i.drawRoundRect(cut[0], cut[1], 'black')
+            pass
+            
+        elif mode==MODE_SAFECHECK:
+            cut = self.project.size.getCutWH()
+            i.drawRoundRect(cut[0], cut[1], 'black')
+            safe = self.project.size.getSafeWH()
+            i.drawRoundRect(safe[0], safe[1], 'red')
+
+        else:
+            raise AttributeError('Invalid card mode %r'%(mode))
     
 class Type:
 

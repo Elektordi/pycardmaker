@@ -15,9 +15,10 @@ from . import pdf
 commandlist = {
     'help': 'This help.',
     'new': 'Create project and base files in it.',
-    'build': 'Build project output files (images)',
+    'build': 'Build project output images',
     'pdf': 'Build project output PDF',
-    'safecheck': 'Build project output PDF with safe area check',    
+    'safecheck': 'Build project output images with safe area check',
+    'pdfsafecheck': 'Build project output PDF with safe area check',
     'check': 'Check project data without building',
     'config': 'Show all available config',
 }
@@ -98,6 +99,10 @@ def command_pdf(options):
     pdf.PdfManager.outPdf(options.outdir, p, cards.MODE_CUT)
 
 def command_safecheck(options):
+    p = projects.Project(options.project, options.projdir)
+    cards.CardsManager.build(options.outdir, p, cards.MODE_SAFECHECK, options.dedup)
+    
+def command_pdfsafecheck(options):
     p = projects.Project(options.project, options.projdir)
     pdf.PdfManager.outPdf(options.outdir, p, cards.MODE_SAFECHECK)
 

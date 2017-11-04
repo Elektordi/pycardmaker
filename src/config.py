@@ -94,8 +94,20 @@ class Size(Generic):
         return 'sizes'
         
     def newImage(self):
-        wh = self.config['size']['bleedsize'].split('x')
+        wh = self.getBleedWH()
         return imgtools.MyImage(wh[0], wh[1])
+        
+    def getBleedWH(self):
+        hw = self.config['size']['bleedsize'].split('x')
+        return [int(x) for x in hw]
+        
+    def getCutWH(self):
+        hw = self.config['size']['cutsize'].split('x')
+        return [int(x) for x in hw]
+        
+    def getSafeWH(self):
+        hw = self.config['size']['safesize'].split('x')   
+        return [int(x) for x in hw]     
         
 
 class InvalidConfig(Exception):
