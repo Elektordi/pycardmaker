@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-class Pdf:
-    pass
+class PdfManager:
+    
+    def outPdf(dir, p, mode):
+        print("TODO PDF")
+

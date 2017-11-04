@@ -39,6 +39,8 @@ def argv_parse_check():
     parser.add_argument("-o", dest='outdir', type=str, default=basedir+"/out", help="Set output directory")
     parser.add_argument("-p", dest='projdir', type=str, default=None, help="Set output directory")
 
+    parser.add_argument("-d", dest='dedup', action='store_true', help="Deduplicate cards (only output one of each)")
+
     options = parser.parse_args()
 
     if options.loglevel:
@@ -88,13 +90,16 @@ def command_new(options):
     projects.ProjectsManager.new(options.project, options.projdir)
 
 def command_build(options):
-    print("TODO")
+    p = projects.Project(options.project, options.projdir)
+    cards.CardsManager.build(options.outdir, p, cards.MODE_EXT, options.dedup)
 
 def command_pdf(options):
-    print("TODO")
+    p = projects.Project(options.project, options.projdir)
+    pdf.PdfManager.outPdf(options.outdir, p, cards.MODE_CUT)
 
 def command_safecheck(options):
-    print("TODO")
+    p = projects.Project(options.project, options.projdir)
+    pdf.PdfManager.outPdf(options.outdir, p, cards.MODE_SAFECHECK)
 
 def command_check(options):
     p = projects.Project(options.project, options.projdir)

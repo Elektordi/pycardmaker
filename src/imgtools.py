@@ -6,8 +6,7 @@ log = logging.getLogger("pycardmaker")
 
 from pathlib import Path
 
-from pgmagick import Image, DrawableCircle, DrawableText, Geometry, Color
-
+from pgmagick import Image, Geometry, Color, CompositeOperator
 
 class MyImage:
     def __init__(self, w, h):
@@ -19,3 +18,6 @@ class MyImage:
             return
         self.img.write(str(p))
     
+    def merge(self, file):
+        layer = Image(str(file))
+        self.img.composite(layer, 0, 0, CompositeOperator.OverCompositeOp)

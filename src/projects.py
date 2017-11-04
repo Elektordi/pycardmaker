@@ -6,6 +6,7 @@ log = logging.getLogger("pycardmaker")
 
 from pathlib import Path
 from configparser import ConfigParser
+from io import StringIO
 
 from . import config
 
@@ -53,17 +54,19 @@ class ProjectsManager:
         cp.write(f)
         f.close()
         
+        emptyimg = size.newImage()
+        
         for f in ['overlay', 'background', 'back']:
-            size.createPlaceholder(dir/("%s.png"%(f)))
+            emptyimg.save(dir/("%s.png"%(f)))
         
         for f in game.getBacks():
-            size.createPlaceholder(dir/("back_%s.png"%(f)))
+            emptyimg.save(dir/("back_%s.png"%(f)))
         
         cards = dir/'cards'
         cards.mkdir()
         
         for f in game.getCards():
-            size.createPlaceholder(cards/("%s.png"%(f)))
+            emptyimg.save(cards/("%s.png"%(f)))
         
         print()
         print("Project '%s' created at '%s'. Enjoy!"%(name, directory))
@@ -78,12 +81,16 @@ class Project:
         self.size = size
         
         if not self.dir.is_dir():
-            raise IOError("Invalid project directory"%(self.dif));
+            raise InvalidProject("No project at directory %s"%(self.dir));
+            
+        configfile = self.dir/'project.txt'
+        if not configfile.is_file():
+            raise InvalidProject("No project config at %s"%(configfile));
 
         cp = ConfigParser()
         
         try:
-            cp.read_file((self.dir/'project.txt').open())
+            cp.read_file(configfile.open())
             
             if int(cp['pycardmaker']['v']) > 1:
                 raise InvalidProject("Invalid project %s: Unknow config version %s"%(name, cp['pycardmaker']['v']))
@@ -116,6 +123,17 @@ class Project:
         
     def check(self):
         print("TODO CHECK")
+        
+    def getMergedGameConf(self):
+        cp = ConfigParser()
+        for c in [self.game.config, self.config]:
+            io = StringIO()
+            c.write(io)
+            io.seek(0)
+            cp.read_file(io)
+            io.close()
+        return cp
+
 
 
 class InvalidProject(Exception):

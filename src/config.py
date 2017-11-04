@@ -93,10 +93,9 @@ class Size(Generic):
     def dirname():
         return 'sizes'
         
-    def createPlaceholder(self, file):
+    def newImage(self):
         wh = self.config['size']['bleedsize'].split('x')
-        i = imgtools.MyImage(wh[0], wh[1])
-        i.save(file)
+        return imgtools.MyImage(wh[0], wh[1])
         
 
 class InvalidConfig(Exception):
