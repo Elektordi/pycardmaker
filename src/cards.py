@@ -30,7 +30,7 @@ class CardsManager:
                 a.append(c)
         return a
 
-    def build(dir, p, mode, dedup):
+    def build(dir, p, mode, dedup, nofront, noback):
         path = Path(dir)/p.name/'cards'
         if path.exists():
             print('Deleting existing out dir: %s'%(path))
@@ -40,7 +40,7 @@ class CardsManager:
         print("Generating cards...")
         cards = CardsManager.getCardsFromProject(p)
         n = 0
-        for c in cards:
+        for c in cards:           
             fi = p.size.newImage()
             bi = p.size.newImage()
             c.paintFront(fi)
@@ -48,13 +48,17 @@ class CardsManager:
             c.applyMode(fi, mode)
             c.applyMode(bi, mode)
             if dedup:
-                fi.save(path/('%s-%s-F-x%d.png'%(c.type.ref, c.ref, c.count)))
-                bi.save(path/('%s-%s-B-x%d.png'%(c.type.ref, c.ref, c.count)))
+                if not nofront:
+                    fi.save(path/('%s-%s-F-x%d.png'%(c.type.ref, c.ref, c.count)))
+                if not noback:
+                    bi.save(path/('%s-%s-B-x%d.png'%(c.type.ref, c.ref, c.count)))
                 n+=1
             else:
                 for num in range(c.count):
-                    fi.save(path/('%s-%s-%02dF.png'%(c.type.ref, c.ref, num+1)))
-                    bi.save(path/('%s-%s-%02dB.png'%(c.type.ref, c.ref, num+1)))
+                    if not nofront:                
+                        fi.save(path/('%03d-%s-%s-%02dF.png'%(n, c.type.ref, c.ref, num+1)))
+                    if not noback:
+                        bi.save(path/('%03d-%s-%s-%02dB.png'%(n, c.type.ref, c.ref, num+1)))
                     n+=1
                     
         print("Done! %d cards generated to: %s"%(n, path))
@@ -81,7 +85,10 @@ class Card:
         for id in list:
             l = self.project.config[cat][id]
             l = l.format(card=self.ref, type=self.type.ref, back=self.type.back)
-            i.merge(self.project.dir/l)
+            modif = None
+            if '|' in l:
+                (l, modif) = l.split('|')
+            i.merge(self.project.dir/l, modif)
             
     def applyMode(self, i, mode):
         if mode==MODE_EXT:

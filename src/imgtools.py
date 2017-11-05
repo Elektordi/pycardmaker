@@ -17,8 +17,10 @@ class MyImage:
             return
         self.img.write(str(p))
     
-    def merge(self, file):
+    def merge(self, file, modif=None):
         layer = Image(str(file))
+        if modif:
+            self.modif(layer, modif)
         self.img.composite(layer, 0, 0, CompositeOperator.OverCompositeOp)
         
     def drawRoundRect(self, w, h, color):
@@ -29,3 +31,8 @@ class MyImage:
         self.img.fillColor('transparent');
         self.img.strokeWidth(5);
         self.img.draw(r)
+        
+    def modif(self, layer, modif):
+        if modif=='mirror':
+                layer.flip()
+                layer.flop()

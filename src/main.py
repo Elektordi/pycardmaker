@@ -41,6 +41,8 @@ def argv_parse_check():
     parser.add_argument("-p", dest='projdir', type=str, default=None, help="Set output directory")
 
     parser.add_argument("-d", dest='dedup', action='store_true', help="Deduplicate cards (only output one of each)")
+    parser.add_argument("--nofront", dest='nofront', action='store_true', help="Do not build fronts")
+    parser.add_argument("--noback", dest='noback', action='store_true', help="Do not build backs")
 
     options = parser.parse_args()
 
@@ -92,7 +94,7 @@ def command_new(options):
 
 def command_build(options):
     p = projects.Project(options.project, options.projdir)
-    cards.CardsManager.build(options.outdir, p, cards.MODE_EXT, options.dedup)
+    cards.CardsManager.build(options.outdir, p, cards.MODE_EXT, options.dedup, options.nofront, options.noback)
 
 def command_pdf(options):
     p = projects.Project(options.project, options.projdir)
@@ -100,7 +102,7 @@ def command_pdf(options):
 
 def command_safecheck(options):
     p = projects.Project(options.project, options.projdir)
-    cards.CardsManager.build(options.outdir, p, cards.MODE_SAFECHECK, options.dedup)
+    cards.CardsManager.build(options.outdir, p, cards.MODE_SAFECHECK, options.dedup, options.nofront, options.noback)
     
 def command_pdfsafecheck(options):
     p = projects.Project(options.project, options.projdir)
